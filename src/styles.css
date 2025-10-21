@@ -1,0 +1,266 @@
+:root {
+  color-scheme: dark;
+  --bg-gradient: linear-gradient(135deg, #20124d, #3a1f6f 60%, #ff7dba);
+  --panel-gradient: linear-gradient(160deg, rgba(255, 255, 255, 0.18), rgba(97, 141, 255, 0.12));
+  --accent: #7df0ff;
+  --accent-alt: #ff9de2;
+  --accent-soft: rgba(125, 240, 255, 0.22);
+  --accent-border: rgba(125, 240, 255, 0.35);
+  --accent-glow: rgba(125, 240, 255, 0.35);
+  --text-primary: #f4f5ff;
+  --text-secondary: rgba(244, 245, 255, 0.7);
+  --toolbar-bg: rgba(20, 10, 40, 0.85);
+  --toolbar-border: var(--accent-border);
+  --welcome-shadow: 0 20px 45px rgba(0, 0, 0, 0.35);
+  font-family: 'Nunito', 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+body {
+  margin: 0;
+  background: var(--bg-gradient);
+  color: var(--text-primary);
+  height: 100vh;
+  overflow: hidden;
+  transition: background 0.5s ease;
+}
+
+body.alt-accent {
+  --accent: var(--accent-alt);
+  --accent-soft: rgba(255, 157, 226, 0.28);
+  --accent-border: rgba(255, 157, 226, 0.45);
+  --accent-glow: rgba(255, 157, 226, 0.45);
+  --toolbar-border: var(--accent-border);
+}
+
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 0.75rem 1.5rem;
+  backdrop-filter: blur(16px);
+  background-color: var(--toolbar-bg);
+  border-bottom: 1px solid var(--toolbar-border);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+  z-index: 10;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 240px;
+}
+
+.brand__badge {
+  width: 56px;
+  height: 56px;
+  border-radius: 18px;
+  box-shadow: 0 10px 20px var(--accent-glow);
+}
+
+.brand__text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.brand__title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.3rem;
+  letter-spacing: 0.02em;
+}
+
+.brand__subtitle {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.toolbar__controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+}
+
+.nav-buttons {
+  display: inline-flex;
+  gap: 0.4rem;
+  background: rgba(14, 10, 26, 0.65);
+  border-radius: 999px;
+  padding: 0.35rem 0.4rem;
+  box-shadow: inset 0 0 0 1px var(--accent-border);
+}
+
+.nav-buttons button,
+.toolbar__extra button,
+.quick-links button,
+.address-bar button {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-primary);
+  border: 1px solid var(--accent-border);
+  border-radius: 999px;
+  padding: 0.35rem 0.8rem;
+  font-weight: 600;
+  font-family: inherit;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.nav-buttons button:hover,
+.toolbar__extra button:hover,
+.quick-links button:hover,
+.address-bar button:hover {
+  background: var(--accent-soft);
+  color: #0e0a1a;
+  box-shadow: 0 8px 16px var(--accent-glow);
+  transform: translateY(-1px);
+}
+
+.nav-buttons button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  box-shadow: none;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.address-bar {
+  display: flex;
+  flex: 1;
+  background: rgba(10, 6, 20, 0.78);
+  border-radius: 999px;
+  padding: 0.2rem;
+  gap: 0.5rem;
+  align-items: center;
+  box-shadow: inset 0 0 0 1px var(--accent-border);
+}
+
+.address-bar input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  font-family: inherit;
+  padding: 0.35rem 0.8rem;
+}
+
+.address-bar input:focus {
+  outline: none;
+}
+
+.toolbar__extra button {
+  font-size: 1.2rem;
+  padding: 0.4rem 0.9rem;
+}
+
+.content {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: 1.5rem;
+  padding: 1.5rem 1.5rem 1.5rem 1.5rem;
+  overflow: hidden;
+}
+
+.welcome-panel {
+  background: var(--panel-gradient);
+  border-radius: 32px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  box-shadow: var(--welcome-shadow);
+  position: relative;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.welcome-panel--hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-30px);
+}
+
+.welcome-panel__art {
+  width: 100%;
+  height: 220px;
+  border-radius: 24px;
+  background: url('assets/konata-badge.svg') center/cover no-repeat,
+    radial-gradient(circle at top left, rgba(125, 240, 255, 0.4), transparent 60%),
+    rgba(18, 12, 38, 0.85);
+  box-shadow: inset 0 0 0 1px rgba(125, 240, 255, 0.25);
+}
+
+.welcome-panel h1 {
+  margin: 0;
+  font-size: 1.9rem;
+  font-family: 'Poppins', sans-serif;
+  letter-spacing: 0.01em;
+}
+
+.welcome-panel p {
+  margin: 0;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.quick-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.quick-links button {
+  padding: 0.45rem 1rem;
+}
+
+webview {
+  width: 100%;
+  height: 100%;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+  border: 1px solid var(--accent-border);
+  background: rgba(6, 3, 13, 0.9);
+}
+
+body.loading webview {
+  filter: saturate(0.7) brightness(0.85);
+}
+
+@media (max-width: 1200px) {
+  .content {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .welcome-panel {
+    display: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .toolbar {
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .brand {
+    min-width: auto;
+  }
+
+  .toolbar__controls {
+    flex-direction: column;
+    width: 100%;
+    align-items: stretch;
+  }
+
+  .address-bar {
+    width: 100%;
+  }
+}

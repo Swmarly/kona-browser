@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kona Browser</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Poppins:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="toolbar">
+        <div class="brand">
+          <img src="assets/konata-badge.svg" alt="Kona Browser Mascot" class="brand__badge" />
+          <div class="brand__text">
+            <span class="brand__title">Kona Browser</span>
+            <span class="brand__subtitle">Powered by Konata energy</span>
+          </div>
+        </div>
+        <div class="toolbar__controls">
+          <div class="nav-buttons">
+            <button id="back" title="Back" aria-label="Back">⟨</button>
+            <button id="forward" title="Forward" aria-label="Forward">⟩</button>
+            <button id="reload" title="Reload" aria-label="Reload">⟳</button>
+            <button id="home" title="Home" aria-label="Home">⌂</button>
+          </div>
+          <div class="address-bar">
+            <input
+              id="url-input"
+              type="text"
+              placeholder="Search the web with Kona or enter URL"
+              spellcheck="false"
+              autocomplete="off"
+            />
+            <button id="go" aria-label="Go to address">Go!</button>
+          </div>
+        </div>
+        <div class="toolbar__extra">
+          <button id="toggle-theme" title="Toggle accent">☆</button>
+        </div>
+      </header>
+
+      <div class="content">
+        <aside class="welcome-panel" id="welcome">
+          <div class="welcome-panel__art"></div>
+          <h1>Welcome to Kona Browser</h1>
+          <p>
+            Your kawaii window to the web. Kona keeps things playful and snappy with soft gradients,
+            pastel sparkles, and a sprinkle of otaku charm inspired by Konata Izumi.
+          </p>
+          <div class="quick-links">
+            <button data-url="https://www.google.com/search?q=Konata+Izumi">Konata Facts</button>
+            <button data-url="https://myanimelist.net/">Anime Lists</button>
+            <button data-url="https://www.youtube.com/results?search_query=Lucky+Star">Lucky Star Clips</button>
+          </div>
+        </aside>
+        <webview
+          id="webview"
+          src="https://duckduckgo.com/?q=Konata+Izumi"
+          allowpopups
+        ></webview>
+      </div>
+    </div>
+
+    <script src="renderer.js"></script>
+  </body>
+</html>
