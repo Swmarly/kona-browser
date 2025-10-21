@@ -1,17 +1,26 @@
 :root {
   color-scheme: dark;
-  --bg-gradient: linear-gradient(135deg, #20124d, #3a1f6f 60%, #ff7dba);
+  --bg-gradient: radial-gradient(circle at 20% -20%, rgba(125, 240, 255, 0.22), transparent 45%),
+    linear-gradient(145deg, #15152d, #1f1c3f 55%, #48216a);
   --panel-gradient: linear-gradient(160deg, rgba(255, 255, 255, 0.18), rgba(97, 141, 255, 0.12));
   --accent: #7df0ff;
   --accent-alt: #ff9de2;
-  --accent-soft: rgba(125, 240, 255, 0.22);
-  --accent-border: rgba(125, 240, 255, 0.35);
-  --accent-glow: rgba(125, 240, 255, 0.35);
+  --accent-soft: rgba(125, 240, 255, 0.18);
+  --accent-border: rgba(125, 240, 255, 0.28);
+  --accent-glow: rgba(125, 240, 255, 0.32);
   --text-primary: #f4f5ff;
-  --text-secondary: rgba(244, 245, 255, 0.7);
-  --toolbar-bg: rgba(20, 10, 40, 0.85);
-  --toolbar-border: var(--accent-border);
-  --welcome-shadow: 0 20px 45px rgba(0, 0, 0, 0.35);
+  --text-secondary: rgba(244, 245, 255, 0.72);
+  --toolbar-bg: linear-gradient(180deg, rgba(35, 31, 66, 0.88), rgba(16, 13, 32, 0.92));
+  --toolbar-border: rgba(125, 240, 255, 0.2);
+  --toolbar-highlight: rgba(125, 240, 255, 0.32);
+  --toolbar-shadow: 0 18px 32px rgba(6, 2, 15, 0.55);
+  --chrome-button-bg: rgba(255, 255, 255, 0.08);
+  --chrome-button-hover: rgba(125, 240, 255, 0.24);
+  --chrome-button-active: rgba(125, 240, 255, 0.32);
+  --omnibox-bg: rgba(28, 26, 50, 0.92);
+  --omnibox-border: rgba(255, 255, 255, 0.08);
+  --omnibox-shadow: 0 8px 18px rgba(7, 3, 16, 0.55);
+  --welcome-shadow: 0 22px 46px rgba(5, 0, 20, 0.4);
   font-family: 'Nunito', 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
@@ -21,15 +30,17 @@ body {
   color: var(--text-primary);
   height: 100vh;
   overflow: hidden;
-  transition: background 0.5s ease;
+  transition: background 0.45s ease;
 }
 
 body.alt-accent {
   --accent: var(--accent-alt);
-  --accent-soft: rgba(255, 157, 226, 0.28);
-  --accent-border: rgba(255, 157, 226, 0.45);
-  --accent-glow: rgba(255, 157, 226, 0.45);
-  --toolbar-border: var(--accent-border);
+  --accent-soft: rgba(255, 157, 226, 0.2);
+  --accent-border: rgba(255, 157, 226, 0.38);
+  --accent-glow: rgba(255, 157, 226, 0.4);
+  --toolbar-border: rgba(255, 157, 226, 0.28);
+  --chrome-button-hover: rgba(255, 157, 226, 0.26);
+  --chrome-button-active: rgba(255, 157, 226, 0.34);
 }
 
 .app-shell {
@@ -41,27 +52,39 @@ body.alt-accent {
 .toolbar {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
-  padding: 0.75rem 1.5rem;
-  backdrop-filter: blur(16px);
-  background-color: var(--toolbar-bg);
+  gap: 1rem;
+  padding: 0.65rem 1.5rem 0.75rem;
+  backdrop-filter: blur(18px);
+  background: var(--toolbar-bg);
   border-bottom: 1px solid var(--toolbar-border);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+  box-shadow: var(--toolbar-shadow);
   z-index: 10;
+  position: relative;
+}
+
+.toolbar::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--toolbar-highlight), transparent);
+  pointer-events: none;
 }
 
 .brand {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  min-width: 240px;
+  gap: 0.6rem;
+  min-width: 220px;
 }
 
 .brand__badge {
-  width: 56px;
-  height: 56px;
-  border-radius: 18px;
-  box-shadow: 0 10px 20px var(--accent-glow);
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  box-shadow: 0 10px 22px var(--accent-glow);
 }
 
 .brand__text {
@@ -72,12 +95,12 @@ body.alt-accent {
 
 .brand__title {
   font-family: 'Poppins', sans-serif;
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   letter-spacing: 0.02em;
 }
 
 .brand__subtitle {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   color: var(--text-secondary);
 }
 
@@ -91,21 +114,21 @@ body.alt-accent {
 .nav-buttons {
   display: inline-flex;
   gap: 0.4rem;
-  background: rgba(14, 10, 26, 0.65);
-  border-radius: 999px;
-  padding: 0.35rem 0.4rem;
-  box-shadow: inset 0 0 0 1px var(--accent-border);
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  padding: 0.25rem 0.3rem;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
 }
 
 .nav-buttons button,
 .toolbar__extra button,
 .quick-links button,
 .address-bar button {
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--chrome-button-bg);
   color: var(--text-primary);
-  border: 1px solid var(--accent-border);
-  border-radius: 999px;
-  padding: 0.35rem 0.8rem;
+  border: 1px solid transparent;
+  border-radius: 14px;
+  padding: 0.35rem 0.75rem;
   font-weight: 600;
   font-family: inherit;
   letter-spacing: 0.02em;
@@ -117,9 +140,9 @@ body.alt-accent {
 .toolbar__extra button:hover,
 .quick-links button:hover,
 .address-bar button:hover {
-  background: var(--accent-soft);
+  background: var(--chrome-button-hover);
   color: #0e0a1a;
-  box-shadow: 0 8px 16px var(--accent-glow);
+  box-shadow: 0 10px 18px var(--accent-glow);
   transform: translateY(-1px);
 }
 
@@ -127,18 +150,19 @@ body.alt-accent {
   opacity: 0.35;
   cursor: not-allowed;
   box-shadow: none;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.04);
 }
 
 .address-bar {
   display: flex;
   flex: 1;
-  background: rgba(10, 6, 20, 0.78);
-  border-radius: 999px;
-  padding: 0.2rem;
-  gap: 0.5rem;
+  background: var(--omnibox-bg);
+  border-radius: 16px;
+  padding: 0.2rem 0.25rem 0.2rem 0.4rem;
+  gap: 0.4rem;
   align-items: center;
-  box-shadow: inset 0 0 0 1px var(--accent-border);
+  border: 1px solid var(--omnibox-border);
+  box-shadow: var(--omnibox-shadow);
 }
 
 .address-bar input {
@@ -146,17 +170,33 @@ body.alt-accent {
   background: transparent;
   border: none;
   color: var(--text-primary);
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   font-family: inherit;
-  padding: 0.35rem 0.8rem;
+  padding: 0.4rem 0.2rem;
 }
 
 .address-bar input:focus {
   outline: none;
 }
 
+.address-bar button {
+  background: rgba(125, 240, 255, 0.82);
+  color: #050311;
+  border-radius: 12px;
+  padding: 0.35rem 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  box-shadow: 0 12px 22px rgba(125, 240, 255, 0.24);
+}
+
+.address-bar button:hover {
+  background: rgba(125, 240, 255, 0.95);
+  color: #050311;
+  box-shadow: 0 14px 28px rgba(125, 240, 255, 0.28);
+}
+
 .toolbar__extra button {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   padding: 0.4rem 0.9rem;
 }
 
@@ -179,6 +219,7 @@ body.alt-accent {
   box-shadow: var(--welcome-shadow);
   position: relative;
   transition: opacity 0.3s ease, transform 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .welcome-panel--hidden {
@@ -194,7 +235,7 @@ body.alt-accent {
   background: url('assets/konata-badge.svg') center/cover no-repeat,
     radial-gradient(circle at top left, rgba(125, 240, 255, 0.4), transparent 60%),
     rgba(18, 12, 38, 0.85);
-  box-shadow: inset 0 0 0 1px rgba(125, 240, 255, 0.25);
+  box-shadow: inset 0 0 0 1px rgba(125, 240, 255, 0.18);
 }
 
 .welcome-panel h1 {
@@ -217,17 +258,19 @@ body.alt-accent {
 }
 
 .quick-links button {
-  padding: 0.45rem 1rem;
+  padding: 0.45rem 0.95rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 webview {
   width: 100%;
   height: 100%;
-  border-radius: 24px;
+  border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
-  border: 1px solid var(--accent-border);
-  background: rgba(6, 3, 13, 0.9);
+  box-shadow: 0 26px 60px rgba(4, 0, 18, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(6, 3, 13, 0.82);
 }
 
 body.loading webview {
