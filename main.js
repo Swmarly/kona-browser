@@ -1,4 +1,13 @@
-const { app, BrowserWindow, ipcMain, shell, nativeTheme } = require('electron');
+const electron = require('electron');
+
+if (!electron.app) {
+  console.error(
+    'Kona Browser must be launched with Electron. Run "npm start" or "npx electron ." instead of "node main.js".'
+  );
+  process.exit(1);
+}
+
+const { app, BrowserWindow, ipcMain, shell, nativeTheme } = electron;
 const path = require('path');
 
 const createWindow = () => {
