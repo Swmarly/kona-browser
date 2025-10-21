@@ -1,4 +1,6 @@
 const { load } = require('cheerio');
+const http = require('node:http');
+const https = require('node:https');
 
 const GOOGLE_BASE_URL = 'https://www.google.com';
 const GOOGLE_SEARCH_ENDPOINT = `${GOOGLE_BASE_URL}/search`;
@@ -9,8 +11,11 @@ const DEFAULT_HEADERS = {
   'Accept-Language': 'en-US,en;q=0.9',
   Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
   Referer: GOOGLE_BASE_URL,
-  Connection: 'keep-alive'
+  Connection: 'keep-alive',
+  'Accept-Encoding': 'identity'
 };
+
+const MAX_REDIRECTS = 5;
 
 const parseResultStats = (rawText) => {
   if (!rawText) {
@@ -158,11 +163,57 @@ const detectCaptchaPage = (html, finalUrl) => {
   return /unusual traffic from your computer network/i.test(html);
 };
 
-const ensureFetch = () => {
-  if (typeof fetch !== 'function') {
-    throw new Error('Global fetch API is not available in this version of Node.js/Electron.');
+const performRequest = (targetUrl, redirectCount = 0) => {
+  if (redirectCount > MAX_REDIRECTS) {
+    throw new Error('Too many redirects encountered while requesting Google Search.');
   }
-  return fetch;
+
+  const url = typeof targetUrl === 'string' ? new URL(targetUrl) : targetUrl;
+  const isHttps = url.protocol === 'https:';
+  const transport = isHttps ? https : http;
+
+  return new Promise((resolve, reject) => {
+    const request = transport.request(
+      {
+        protocol: url.protocol,
+        hostname: url.hostname,
+        port: url.port || (isHttps ? 443 : 80),
+        method: 'GET',
+        path: `${url.pathname}${url.search}`,
+        headers: DEFAULT_HEADERS
+      },
+      (response) => {
+        const { statusCode = 0, headers } = response;
+
+        if (
+          statusCode >= 300 &&
+          statusCode < 400 &&
+          headers?.location
+        ) {
+          const redirectUrl = new URL(headers.location, url);
+          response.resume();
+          resolve(performRequest(redirectUrl, redirectCount + 1));
+          return;
+        }
+
+        const chunks = [];
+        response.on('data', (chunk) => chunks.push(chunk));
+        response.on('error', reject);
+        response.on('end', () => {
+          const body = Buffer.concat(chunks);
+          resolve({
+            statusCode,
+            headers,
+            body,
+            finalUrl: url.toString()
+          });
+        });
+      }
+    );
+
+    request.on('error', reject);
+    request.end();
+  });
 };
 
 const buildSearchUrl = (query) => {
@@ -188,20 +239,15 @@ const searchGoogle = async (query) => {
   }
 
   const url = buildSearchUrl(trimmed);
-  const fetchImpl = ensureFetch();
-  const response = await fetchImpl(url, {
-    headers: DEFAULT_HEADERS,
-    redirect: 'follow'
-  });
+  const { statusCode, body, finalUrl } = await performRequest(url);
 
-  if (!response.ok) {
-    const error = new Error(`Google search request failed with status ${response.status}`);
-    error.status = response.status;
+  if (statusCode < 200 || statusCode >= 300) {
+    const error = new Error(`Google search request failed with status ${statusCode}`);
+    error.status = statusCode;
     throw error;
   }
 
-  const finalUrl = response.url || url.toString();
-  const html = await response.text();
+  const html = body.toString('utf8');
 
   if (detectCaptchaPage(html, finalUrl)) {
     const error = new Error('Google blocked the automated request with a captcha challenge.');
