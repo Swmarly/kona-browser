@@ -10,6 +10,8 @@ if (!electron.app) {
 const { app, BrowserWindow, ipcMain, shell, nativeTheme } = electron;
 const path = require('path');
 
+const { searchGoogle } = require('./google-search');
+
 const createWindow = () => {
   const win = new BrowserWindow({
     width: 1200,
@@ -56,5 +58,21 @@ app.on('window-all-closed', () => {
 ipcMain.handle('open-external', async (_event, url) => {
   if (typeof url === 'string' && url.startsWith('http')) {
     await shell.openExternal(url);
+  }
+});
+
+ipcMain.handle('google-search', async (_event, query) => {
+  try {
+    const payload = await searchGoogle(query);
+    return { ok: true, payload };
+  } catch (error) {
+    return {
+      ok: false,
+      error: {
+        message: error?.message ?? 'Failed to query Google Search.',
+        code: error?.code ?? null,
+        status: typeof error?.status === 'number' ? error.status : null
+      }
+    };
   }
 });

@@ -149,6 +149,10 @@
         gap: 0.5rem;
       }
 
+      .search-chips--hidden {
+        display: none;
+      }
+
       .search-chips button {
         border: 1px solid rgba(255, 255, 255, 0.12);
         background: rgba(125, 240, 255, 0.12);
@@ -168,6 +172,36 @@
       .search-meta {
         font-size: 0.85rem;
         color: var(--text-tertiary);
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.6rem;
+        align-items: center;
+      }
+
+      .search-meta__badge {
+        background: rgba(125, 240, 255, 0.12);
+        border-radius: 999px;
+        border: 1px solid rgba(125, 240, 255, 0.24);
+        color: var(--accent);
+        padding: 0.2rem 0.75rem;
+        font-size: 0.75rem;
+        letter-spacing: 0.02em;
+      }
+
+      .search-meta__suggestion {
+        border: 1px solid rgba(125, 240, 255, 0.32);
+        background: transparent;
+        color: var(--accent);
+        border-radius: 999px;
+        padding: 0.25rem 0.65rem;
+        font-size: 0.8rem;
+        cursor: pointer;
+        transition: background 0.2s ease, transform 0.2s ease;
+      }
+
+      .search-meta__suggestion:hover {
+        background: rgba(125, 240, 255, 0.12);
+        transform: translateY(-1px);
       }
 
       .results {
@@ -190,6 +224,14 @@
         box-shadow: 0 20px 40px rgba(7, 3, 18, 0.5);
       }
 
+      .result-card__host {
+        display: block;
+        font-size: 0.8rem;
+        color: var(--text-tertiary);
+        margin-bottom: 0.25rem;
+        letter-spacing: 0.01em;
+      }
+
       .result-card a {
         color: var(--accent);
         font-size: 1.1rem;
@@ -203,26 +245,10 @@
         text-decoration: underline;
       }
 
-      .result-card p {
+      .result-card__snippet {
         margin: 0;
         color: var(--text-secondary);
         line-height: 1.6;
-      }
-
-      .result-card .tags {
-        margin-top: 0.75rem;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.45rem;
-      }
-
-      .result-card .tags span {
-        font-size: 0.75rem;
-        padding: 0.25rem 0.6rem;
-        border-radius: 999px;
-        background: rgba(125, 240, 255, 0.14);
-        color: var(--text-primary);
-        border: 1px solid rgba(125, 240, 255, 0.18);
       }
 
       .empty-state {
@@ -310,7 +336,7 @@
         <img src="assets/konata-badge.svg" alt="Konata badge" />
         <div class="titles">
           <h1>Kona Search</h1>
-          <span>Konata-approved results, curated for anime lovers.</span>
+          <span>Konata-approved interface, powered by Google Search.</span>
         </div>
       </header>
 
@@ -332,70 +358,6 @@
     </main>
 
     <script>
-      const curatedResults = [
-        {
-          title: 'Konata Izumi – Lucky Star Wiki',
-          url: 'https://luckystar.fandom.com/wiki/Konata_Izumi',
-          snippet:
-            "Deep dive into Konata's personality, hobbies, and iconic quotes straight from the Lucky Star community wiki.",
-          tags: ['character', 'lucky star', 'wiki']
-        },
-        {
-          title: 'Where to Watch Lucky Star in 2024',
-          url: 'https://www.crunchyroll.com/series/GY8VEQ95R/lucky-star',
-          snippet: 'Stream the full Lucky Star series plus bonus OVA content, all in one place with subtitles.',
-          tags: ['streaming', 'lucky star', 'guide']
-        },
-        {
-          title: 'Konata Cosplay Starter Pack',
-          url: 'https://www.cosplay.com/forum/threads/konata-izumi-cosplay-guide.492585/',
-          snippet: 'Break down Konata\'s signature look with wig tips, seifuku details, and prop recommendations.',
-          tags: ['cosplay', 'guide']
-        },
-        {
-          title: 'Lucky Star Opening – Choreography Tutorial',
-          url: 'https://www.youtube.com/watch?v=6jFaoLrLzd4',
-          snippet: 'Learn the full Motteke! Sailor Fuku dance with step-by-step instructions and mirrored views.',
-          tags: ['dance', 'tutorial', 'video']
-        },
-        {
-          title: 'Otaku Culture Deep Dive Podcast',
-          url: 'https://open.spotify.com/show/2LJG7hQGwN87zZk1nVz0M6',
-          snippet: 'Weekly episodes exploring anime fandom history, memes, and modern-day conventions.',
-          tags: ['podcast', 'culture']
-        },
-        {
-          title: 'Seasonal Anime Tracker Spreadsheet',
-          url: 'https://docs.google.com/spreadsheets/d/1zQAnimeSchedule',
-          snippet: 'Keep tabs on airing schedules, simulcast links, and what your friends are watching.',
-          tags: ['planning', 'tool']
-        },
-        {
-          title: 'Akihabara Travel Tips for Anime Fans',
-          url: 'https://www.japan-guide.com/e/e3003.html',
-          snippet: 'Plan a pilgrimage through Akiba with shop highlights, cafe stops, and arcade recommendations.',
-          tags: ['travel', 'akihabara', 'guide']
-        },
-        {
-          title: 'Curated Konata Meme Gallery',
-          url: 'https://imgur.com/gallery/KonataMemes',
-          snippet: 'A hand-picked selection of Konata reaction images and GIFs perfect for your next server raid.',
-          tags: ['memes', 'gallery']
-        },
-        {
-          title: 'Beginner\'s Guide to Visual Novels',
-          url: 'https://www.reddit.com/r/visualnovels/comments/vnovel/beginners_guide_to_visual_novels/',
-          snippet: 'Community recommendations to jump into moe-filled storytelling and branching adventures.',
-          tags: ['visual novels', 'community']
-        },
-        {
-          title: 'Anime Convention Packing Checklist',
-          url: 'https://www.animecons.com/events/tips/packing',
-          snippet: 'Stay organized with a printable checklist covering cosplay kits, tech, and artist alley funds.',
-          tags: ['conventions', 'checklist']
-        }
-      ];
-
       const trendingQueries = [
         'Konata gaming setup',
         'Lucky Star dance practice',
@@ -417,11 +379,31 @@
         searchInput.value = initialQuery;
       }
 
+      let latestSearchToken = 0;
+
       const updateTitle = (query) => {
         document.title = query ? `Kona Search – ${query}` : 'Kona Search';
       };
 
-      const escapeRegExp = (text) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const escapeRegExp = (text) => text.replace(/[.*+?^${}()|[\]\\]/g, '\$&');
+
+      const escapeHtml = (text) =>
+        text.replace(/[&<>"']/g, (character) => {
+          switch (character) {
+            case '&':
+              return '&amp;';
+            case '<':
+              return '&lt;';
+            case '>':
+              return '&gt;';
+            case '"':
+              return '&quot;';
+            case "'":
+              return '&#39;';
+            default:
+              return character;
+          }
+        });
 
       const highlightTokens = (text, tokens) => {
         if (!tokens.length) return text;
@@ -431,64 +413,242 @@
         }, text);
       };
 
-      const buildSearchIndex = (entry) =>
-        `${entry.title} ${entry.snippet} ${(entry.tags || []).join(' ')}`.toLowerCase();
+      const buildSuggestionList = (candidates, currentQuery = '') => {
+        const normalizedCurrent = currentQuery.trim().toLowerCase();
+        const seen = new Set();
+        const output = [];
 
-      const scoredResults = curatedResults.map((entry) => ({
-        entry,
-        index: buildSearchIndex(entry)
-      }));
+        (candidates || []).forEach((candidate) => {
+          const text = typeof candidate === 'string' ? candidate.trim() : '';
+          if (!text) {
+            return;
+          }
 
-      const runSearch = (query) => {
-        const normalized = query.trim().toLowerCase();
-        updateTitle(query.trim());
+          const key = text.toLowerCase();
+          if (key === normalizedCurrent || seen.has(key)) {
+            return;
+          }
 
-        chipsContainer.innerHTML = '';
-        trendingQueries.forEach((item) => {
-          const chip = document.createElement('button');
-          chip.type = 'button';
-          chip.textContent = item;
-          chip.addEventListener('click', () => {
-            searchInput.value = item;
-            submitQuery(item);
-          });
-          chipsContainer.appendChild(chip);
+          seen.add(key);
+          output.push(text);
         });
 
-        if (!normalized) {
-          searchMeta.textContent = 'Discover curated picks or try one of the trending topics below.';
-          renderResultCards(curatedResults.slice(0, 5), []);
+        return output;
+      };
+
+      const createBadge = () => {
+        const badge = document.createElement('span');
+        badge.className = 'search-meta__badge';
+        badge.textContent = 'Powered by Google Search';
+        return badge;
+      };
+
+      const renderSuggestionChips = (suggestions) => {
+        chipsContainer.innerHTML = '';
+        const entries = Array.isArray(suggestions) ? suggestions : [];
+
+        if (!entries.length) {
+          chipsContainer.classList.add('search-chips--hidden');
           return;
         }
 
-        const terms = normalized.split(/\s+/).filter(Boolean);
-        const matches = scoredResults
-          .map(({ entry, index }) => {
-            const score = terms.reduce((sum, term) => {
-              if (!index.includes(term)) {
-                return sum;
-              }
-              const bonus = entry.title.toLowerCase().includes(term) ? 2 : 1;
-              return sum + bonus;
-            }, 0);
-            return { entry, score };
-          })
-          .filter(({ score }) => score > 0)
-          .sort((a, b) => {
-            if (b.score === a.score) {
-              return a.entry.title.localeCompare(b.entry.title);
+        chipsContainer.classList.remove('search-chips--hidden');
+
+        entries.slice(0, 8).forEach((suggestion) => {
+          const text = typeof suggestion === 'string' ? suggestion.trim() : '';
+          if (!text) {
+            return;
+          }
+
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.textContent = text;
+          button.addEventListener('click', () => {
+            searchInput.value = text;
+            submitQuery(text);
+          });
+          chipsContainer.appendChild(button);
+        });
+      };
+
+      const renderStateCard = ({ heading, message, highlight = null, suggestions = [] }) => {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'empty-state';
+
+        if (heading) {
+          const headingEl = document.createElement('h2');
+          headingEl.textContent = heading;
+          wrapper.appendChild(headingEl);
+        }
+
+        if (message) {
+          const paragraph = document.createElement('p');
+          if (highlight) {
+            const template = message.includes('%highlight%') ? message : `${message} %highlight%`;
+            const escapedTemplate = escapeHtml(template);
+            const safeHighlight = `<mark>${escapeHtml(highlight)}</mark>`;
+            paragraph.innerHTML = escapedTemplate.replace('%highlight%', safeHighlight);
+          } else {
+            paragraph.textContent = message;
+          }
+          wrapper.appendChild(paragraph);
+        }
+
+        if (Array.isArray(suggestions) && suggestions.length) {
+          const suggestionList = document.createElement('div');
+          suggestionList.className = 'suggestions';
+          suggestions.slice(0, 4).forEach((suggestion) => {
+            const text = typeof suggestion === 'string' ? suggestion.trim() : '';
+            if (!text) {
+              return;
             }
-            return b.score - a.score;
-          })
-          .map(({ entry }) => entry);
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.textContent = text;
+            button.addEventListener('click', () => {
+              searchInput.value = text;
+              submitQuery(text);
+            });
+            suggestionList.appendChild(button);
+          });
+          wrapper.appendChild(suggestionList);
+        }
 
-        if (!matches.length) {
-          renderEmptyState(terms);
+        resultsContainer.innerHTML = '';
+        resultsContainer.appendChild(wrapper);
+      };
+
+      const appendStatsDetails = (container, info) => {
+        if (!info) {
           return;
         }
 
-        searchMeta.textContent = `Showing ${matches.length} Kona Search result${matches.length === 1 ? '' : 's'}.`;
-        renderResultCards(matches, terms);
+        const { formattedEstimatedResults, searchTimeInSeconds, statsText } = info;
+
+        if (formattedEstimatedResults) {
+          const detail = document.createElement('span');
+          let text = `About ${formattedEstimatedResults} results`;
+          if (typeof searchTimeInSeconds === 'number' && Number.isFinite(searchTimeInSeconds)) {
+            text += ` (${searchTimeInSeconds.toFixed(2)} seconds)`;
+          }
+          detail.textContent = `${text}.`;
+          container.appendChild(detail);
+          return;
+        }
+
+        if (statsText) {
+          const detail = document.createElement('span');
+          detail.textContent = statsText;
+          container.appendChild(detail);
+        }
+      };
+
+      const appendDidYouMean = (container, suggestion) => {
+        if (!suggestion?.suggestion) {
+          return;
+        }
+
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'search-meta__suggestion';
+        button.innerHTML = `Did you mean <strong>${escapeHtml(suggestion.suggestion)}</strong>?`;
+        button.addEventListener('click', () => {
+          const candidate = suggestion.query?.trim() || suggestion.suggestion;
+          searchInput.value = candidate;
+          submitQuery(candidate);
+        });
+        container.appendChild(button);
+      };
+
+      const renderMetaIdle = () => {
+        searchMeta.innerHTML = '';
+        const message = document.createElement('span');
+        message.textContent = 'Search the entire web with Google.';
+        searchMeta.appendChild(message);
+        searchMeta.appendChild(createBadge());
+      };
+
+      const renderMetaLoading = () => {
+        searchMeta.innerHTML = '';
+        const message = document.createElement('span');
+        message.textContent = 'Searching Google…';
+        searchMeta.appendChild(message);
+        searchMeta.appendChild(createBadge());
+      };
+
+      const renderMetaError = () => {
+        searchMeta.innerHTML = '';
+        const message = document.createElement('span');
+        message.textContent = 'Unable to reach Google Search right now.';
+        searchMeta.appendChild(message);
+        searchMeta.appendChild(createBadge());
+      };
+
+      const renderMetaNoResults = (query, info, didYouMean) => {
+        searchMeta.innerHTML = '';
+        const message = document.createElement('span');
+        message.textContent = `No Google results for “${query}”.`;
+        searchMeta.appendChild(message);
+        appendStatsDetails(searchMeta, info);
+        searchMeta.appendChild(createBadge());
+        appendDidYouMean(searchMeta, didYouMean);
+      };
+
+      const renderMetaResults = (count, info, didYouMean) => {
+        searchMeta.innerHTML = '';
+        const message = document.createElement('span');
+        message.textContent = `Showing top ${count} Google result${count === 1 ? '' : 's'}.`;
+        searchMeta.appendChild(message);
+        appendStatsDetails(searchMeta, info);
+        searchMeta.appendChild(createBadge());
+        appendDidYouMean(searchMeta, didYouMean);
+      };
+
+      const renderInitialState = () => {
+        renderStateCard({
+          heading: 'Search with Google',
+          message: 'Type a query to explore the web with Google or tap a Konata-approved suggestion to get started.',
+          suggestions: trendingQueries
+        });
+      };
+
+      const renderLoadingState = (query) => {
+        renderStateCard({
+          heading: 'Searching Google…',
+          message: 'Looking up %highlight% right now.',
+          highlight: query
+        });
+      };
+
+      const renderErrorState = (suggestions) => {
+        renderStateCard({
+          heading: 'Unable to reach Google',
+          message: 'We couldn’t connect to Google Search. Please check your connection and try again.',
+          suggestions
+        });
+      };
+
+      const renderNoResultsState = (query, suggestions) => {
+        renderStateCard({
+          heading: 'No Google results yet',
+          message: 'Google Search didn’t return matches for %highlight%. Try a different keyword or explore a suggested search.',
+          highlight: query,
+          suggestions
+        });
+      };
+
+      const deriveDisplayLink = (entry) => {
+        if (entry.displayLink) {
+          return entry.displayLink;
+        }
+        if (entry.url) {
+          try {
+            return new URL(entry.url).hostname;
+          } catch (_error) {
+            return entry.url;
+          }
+        }
+        return '';
       };
 
       const renderResultCards = (entries, terms) => {
@@ -497,67 +657,118 @@
           const card = document.createElement('article');
           card.className = 'result-card';
 
-          const link = document.createElement('a');
-          link.href = entry.url;
-          link.textContent = entry.title;
-          link.target = '_blank';
-          link.rel = 'noopener';
+          const host = deriveDisplayLink(entry);
+          if (host) {
+            const hostEl = document.createElement('span');
+            hostEl.className = 'result-card__host';
+            hostEl.textContent = host;
+            card.appendChild(hostEl);
+          }
 
-          const description = document.createElement('p');
-          description.innerHTML = highlightTokens(entry.snippet, terms);
+          if (entry.url && entry.title) {
+            const link = document.createElement('a');
+            link.href = entry.url;
+            link.target = '_blank';
+            link.rel = 'noopener';
+            link.innerHTML = highlightTokens(escapeHtml(entry.title), terms);
+            card.appendChild(link);
+          }
 
-          card.appendChild(link);
-          card.appendChild(description);
-
-          if (entry.tags?.length) {
-            const tagList = document.createElement('div');
-            tagList.className = 'tags';
-            entry.tags.forEach((tag) => {
-              const badge = document.createElement('span');
-              badge.textContent = tag;
-              tagList.appendChild(badge);
-            });
-            card.appendChild(tagList);
+          if (entry.snippet) {
+            const description = document.createElement('p');
+            description.className = 'result-card__snippet';
+            description.innerHTML = highlightTokens(escapeHtml(entry.snippet), terms);
+            card.appendChild(description);
           }
 
           resultsContainer.appendChild(card);
         });
       };
 
-      const renderEmptyState = (terms) => {
-        resultsContainer.innerHTML = '';
-        const wrapper = document.createElement('div');
-        wrapper.className = 'empty-state';
+      async function runSearch(rawValue) {
+        const query = typeof rawValue === 'string' ? rawValue.trim() : '';
+        latestSearchToken += 1;
+        const token = latestSearchToken;
 
-        const heading = document.createElement('h2');
-        heading.textContent = 'No Kona Search results yet';
+        updateTitle(query);
 
-        const paragraph = document.createElement('p');
-        const joined = terms.join(' ');
-        paragraph.innerHTML = `Try refining "<mark>${joined}</mark>" or pick one of the suggestions below.`;
+        if (!query) {
+          const suggestions = buildSuggestionList(trendingQueries);
+          renderSuggestionChips(suggestions);
+          renderInitialState();
+          renderMetaIdle();
+          return;
+        }
 
-        const suggestionList = document.createElement('div');
-        suggestionList.className = 'suggestions';
-        trendingQueries.slice(0, 4).forEach((suggestion) => {
-          const button = document.createElement('button');
-          button.type = 'button';
-          button.textContent = suggestion;
-          button.addEventListener('click', () => {
-            searchInput.value = suggestion;
-            submitQuery(suggestion);
-          });
-          suggestionList.appendChild(button);
-        });
+        const tokens = query
+          .toLowerCase()
+          .split(/\s+/)
+          .filter(Boolean);
 
-        wrapper.appendChild(heading);
-        wrapper.appendChild(paragraph);
-        wrapper.appendChild(suggestionList);
-        resultsContainer.appendChild(wrapper);
-        searchMeta.textContent = 'No results found yet – Kona is still learning!';
-      };
+        renderSuggestionChips([]);
+        renderMetaLoading();
+        renderLoadingState(query);
 
-      const submitQuery = (value) => {
-        const query = value.trim();
+        if (!window.kona?.searchGoogle) {
+          if (token !== latestSearchToken) {
+            return;
+          }
+          const fallbackSuggestions = buildSuggestionList(trendingQueries, query);
+          renderSuggestionChips(fallbackSuggestions);
+          renderMetaError();
+          renderErrorState(fallbackSuggestions);
+          return;
+        }
+
+        let response;
+        try {
+          response = await window.kona.searchGoogle(query);
+        } catch (error) {
+          console.error('Kona Search failed to reach Google Search', error);
+          if (token !== latestSearchToken) {
+            return;
+          }
+          const fallbackSuggestions = buildSuggestionList(trendingQueries, query);
+          renderSuggestionChips(fallbackSuggestions);
+          renderMetaError();
+          renderErrorState(fallbackSuggestions);
+          return;
+        }
+
+        if (token !== latestSearchToken) {
+          return;
+        }
+
+        if (!response?.ok) {
+          console.error('Kona Search received an error response from Google bridge', response?.error);
+          const fallbackSuggestions = buildSuggestionList(trendingQueries, query);
+          renderSuggestionChips(fallbackSuggestions);
+          renderMetaError();
+          renderErrorState(fallbackSuggestions);
+          return;
+        }
+
+        const payload = response.payload || {};
+        const results = Array.isArray(payload.results) ? payload.results : [];
+        const info = payload.info || null;
+        const didYouMean = payload.didYouMean || null;
+        const related = buildSuggestionList(payload.relatedQueries || [], query);
+        const fallbackSuggestions = related.length ? related : buildSuggestionList(trendingQueries, query);
+
+        if (!results.length) {
+          renderSuggestionChips(fallbackSuggestions);
+          renderNoResultsState(query, fallbackSuggestions);
+          renderMetaNoResults(query, info, didYouMean);
+          return;
+        }
+
+        renderSuggestionChips(fallbackSuggestions);
+        renderResultCards(results, tokens);
+        renderMetaResults(results.length, info, didYouMean);
+      }
+
+      function submitQuery(value) {
+        const query = typeof value === 'string' ? value.trim() : '';
         const nextSearch = query ? `?q=${encodeURIComponent(query)}` : '';
         const target = nextSearch || window.location.pathname;
 
@@ -570,7 +781,7 @@
         history.pushState({}, '', target);
         searchInput.value = query;
         runSearch(query);
-      };
+      }
 
       searchForm.addEventListener('submit', (event) => {
         event.preventDefault();
