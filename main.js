@@ -1,3 +1,5 @@
+require('./polyfills');
+
 const electron = require('electron');
 
 if (!electron.app) {
