@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kona Search</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Poppins:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: radial-gradient(circle at 30% -10%, rgba(125, 240, 255, 0.18), transparent 55%),
+          linear-gradient(140deg, #14132b, #1c1d3f 55%, #3c1e67);
+        --surface: rgba(24, 22, 44, 0.92);
+        --surface-soft: rgba(30, 28, 55, 0.72);
+        --surface-outline: rgba(255, 255, 255, 0.08);
+        --accent: #7df0ff;
+        --accent-soft: rgba(125, 240, 255, 0.22);
+        --text-primary: #f5f7ff;
+        --text-secondary: rgba(245, 247, 255, 0.7);
+        --text-tertiary: rgba(245, 247, 255, 0.55);
+        font-family: 'Nunito', 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: var(--bg);
+        color: var(--text-primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 3rem 1.5rem 4rem;
+      }
+
+      .search-shell {
+        width: min(880px, 100%);
+        display: flex;
+        flex-direction: column;
+        gap: 1.75rem;
+        background: rgba(18, 16, 34, 0.72);
+        border-radius: 28px;
+        padding: 2.5rem 3rem;
+        box-shadow: 0 28px 68px rgba(6, 3, 20, 0.55);
+        border: 1px solid rgba(125, 240, 255, 0.12);
+        backdrop-filter: blur(26px);
+      }
+
+      .search-shell header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .search-shell header img {
+        width: 60px;
+        height: 60px;
+        border-radius: 18px;
+        box-shadow: 0 14px 30px rgba(125, 240, 255, 0.28);
+      }
+
+      .search-shell header .titles {
+        display: flex;
+        flex-direction: column;
+        gap: 0.2rem;
+      }
+
+      .search-shell header .titles h1 {
+        margin: 0;
+        font-size: 1.8rem;
+        font-family: 'Poppins', sans-serif;
+        letter-spacing: 0.01em;
+      }
+
+      .search-shell header .titles span {
+        font-size: 0.95rem;
+        color: var(--text-secondary);
+      }
+
+      .search-form {
+        display: flex;
+        flex-direction: column;
+        gap: 0.85rem;
+      }
+
+      .search-box {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        background: var(--surface);
+        border-radius: 18px;
+        padding: 0.65rem 0.75rem 0.65rem 1rem;
+        border: 1px solid var(--surface-outline);
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02), 0 12px 28px rgba(7, 3, 18, 0.45);
+      }
+
+      .search-box svg {
+        width: 20px;
+        height: 20px;
+        fill: var(--text-tertiary);
+      }
+
+      .search-box input {
+        flex: 1;
+        background: transparent;
+        border: none;
+        font-size: 1.05rem;
+        color: var(--text-primary);
+        font-family: inherit;
+      }
+
+      .search-box input:focus {
+        outline: none;
+      }
+
+      .search-box button {
+        border: none;
+        background: var(--accent);
+        color: #061119;
+        padding: 0.55rem 1.35rem;
+        font-size: 0.95rem;
+        font-weight: 700;
+        border-radius: 14px;
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        box-shadow: 0 14px 28px rgba(125, 240, 255, 0.28);
+      }
+
+      .search-box button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 16px 32px rgba(125, 240, 255, 0.32);
+      }
+
+      .search-box button:active {
+        transform: translateY(1px);
+      }
+
+      .search-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+
+      .search-chips button {
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(125, 240, 255, 0.12);
+        color: var(--text-primary);
+        border-radius: 999px;
+        padding: 0.4rem 0.85rem;
+        font-size: 0.85rem;
+        cursor: pointer;
+        transition: background 0.2s ease, transform 0.2s ease;
+      }
+
+      .search-chips button:hover {
+        background: rgba(125, 240, 255, 0.22);
+        transform: translateY(-1px);
+      }
+
+      .search-meta {
+        font-size: 0.85rem;
+        color: var(--text-tertiary);
+      }
+
+      .results {
+        display: flex;
+        flex-direction: column;
+        gap: 1.2rem;
+      }
+
+      .result-card {
+        padding: 1.1rem 1.2rem;
+        border-radius: 18px;
+        background: var(--surface);
+        border: 1px solid var(--surface-outline);
+        box-shadow: 0 18px 36px rgba(7, 3, 18, 0.45);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .result-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 20px 40px rgba(7, 3, 18, 0.5);
+      }
+
+      .result-card a {
+        color: var(--accent);
+        font-size: 1.1rem;
+        font-weight: 700;
+        text-decoration: none;
+        display: inline-block;
+        margin-bottom: 0.35rem;
+      }
+
+      .result-card a:hover {
+        text-decoration: underline;
+      }
+
+      .result-card p {
+        margin: 0;
+        color: var(--text-secondary);
+        line-height: 1.6;
+      }
+
+      .result-card .tags {
+        margin-top: 0.75rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.45rem;
+      }
+
+      .result-card .tags span {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.6rem;
+        border-radius: 999px;
+        background: rgba(125, 240, 255, 0.14);
+        color: var(--text-primary);
+        border: 1px solid rgba(125, 240, 255, 0.18);
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 2.5rem 1.5rem;
+        background: var(--surface);
+        border-radius: 20px;
+        border: 1px solid var(--surface-outline);
+        box-shadow: 0 18px 36px rgba(7, 3, 18, 0.45);
+      }
+
+      .empty-state h2 {
+        margin: 0 0 0.5rem;
+        font-size: 1.3rem;
+      }
+
+      .empty-state p {
+        margin: 0;
+        color: var(--text-secondary);
+      }
+
+      .empty-state .suggestions {
+        margin-top: 1.25rem;
+        display: flex;
+        gap: 0.6rem;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .empty-state .suggestions button {
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        padding: 0.45rem 0.95rem;
+        background: rgba(125, 240, 255, 0.12);
+        color: var(--text-primary);
+        cursor: pointer;
+      }
+
+      mark {
+        background: rgba(125, 240, 255, 0.28);
+        color: inherit;
+        padding: 0 0.15rem;
+        border-radius: 4px;
+      }
+
+      @media (max-width: 720px) {
+        body {
+          padding: 2rem 1rem 3rem;
+        }
+
+        .search-shell {
+          padding: 2rem 1.5rem;
+          border-radius: 24px;
+        }
+
+        .search-shell header {
+          flex-direction: column;
+          text-align: center;
+        }
+
+        .search-shell header img {
+          width: 70px;
+          height: 70px;
+        }
+
+        .search-box {
+          flex-direction: column;
+          align-items: stretch;
+          padding: 0.85rem 0.9rem;
+        }
+
+        .search-box button {
+          width: 100%;
+        }
+
+        .search-chips {
+          justify-content: center;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="search-shell">
+      <header>
+        <img src="assets/konata-badge.svg" alt="Konata badge" />
+        <div class="titles">
+          <h1>Kona Search</h1>
+          <span>Konata-approved results, curated for anime lovers.</span>
+        </div>
+      </header>
+
+      <form class="search-form" id="search-form">
+        <div class="search-box">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 1 0-.71.71l.27.28v.79l4.25 4.24a1 1 0 0 0 1.42-1.42L15.5 14Zm-5 0a4.5 4.5 0 1 1 0-9 4.5 4.5 0 0 1 0 9Z"
+            />
+          </svg>
+          <input id="search-input" type="text" placeholder="Search anime, memes, culture..." autocomplete="off" />
+          <button type="submit">Search</button>
+        </div>
+        <div class="search-chips" id="search-chips"></div>
+        <div class="search-meta" id="search-meta"></div>
+      </form>
+
+      <section class="results" id="results"></section>
+    </main>
+
+    <script>
+      const curatedResults = [
+        {
+          title: 'Konata Izumi – Lucky Star Wiki',
+          url: 'https://luckystar.fandom.com/wiki/Konata_Izumi',
+          snippet:
+            "Deep dive into Konata's personality, hobbies, and iconic quotes straight from the Lucky Star community wiki.",
+          tags: ['character', 'lucky star', 'wiki']
+        },
+        {
+          title: 'Where to Watch Lucky Star in 2024',
+          url: 'https://www.crunchyroll.com/series/GY8VEQ95R/lucky-star',
+          snippet: 'Stream the full Lucky Star series plus bonus OVA content, all in one place with subtitles.',
+          tags: ['streaming', 'lucky star', 'guide']
+        },
+        {
+          title: 'Konata Cosplay Starter Pack',
+          url: 'https://www.cosplay.com/forum/threads/konata-izumi-cosplay-guide.492585/',
+          snippet: 'Break down Konata\'s signature look with wig tips, seifuku details, and prop recommendations.',
+          tags: ['cosplay', 'guide']
+        },
+        {
+          title: 'Lucky Star Opening – Choreography Tutorial',
+          url: 'https://www.youtube.com/watch?v=6jFaoLrLzd4',
+          snippet: 'Learn the full Motteke! Sailor Fuku dance with step-by-step instructions and mirrored views.',
+          tags: ['dance', 'tutorial', 'video']
+        },
+        {
+          title: 'Otaku Culture Deep Dive Podcast',
+          url: 'https://open.spotify.com/show/2LJG7hQGwN87zZk1nVz0M6',
+          snippet: 'Weekly episodes exploring anime fandom history, memes, and modern-day conventions.',
+          tags: ['podcast', 'culture']
+        },
+        {
+          title: 'Seasonal Anime Tracker Spreadsheet',
+          url: 'https://docs.google.com/spreadsheets/d/1zQAnimeSchedule',
+          snippet: 'Keep tabs on airing schedules, simulcast links, and what your friends are watching.',
+          tags: ['planning', 'tool']
+        },
+        {
+          title: 'Akihabara Travel Tips for Anime Fans',
+          url: 'https://www.japan-guide.com/e/e3003.html',
+          snippet: 'Plan a pilgrimage through Akiba with shop highlights, cafe stops, and arcade recommendations.',
+          tags: ['travel', 'akihabara', 'guide']
+        },
+        {
+          title: 'Curated Konata Meme Gallery',
+          url: 'https://imgur.com/gallery/KonataMemes',
+          snippet: 'A hand-picked selection of Konata reaction images and GIFs perfect for your next server raid.',
+          tags: ['memes', 'gallery']
+        },
+        {
+          title: 'Beginner\'s Guide to Visual Novels',
+          url: 'https://www.reddit.com/r/visualnovels/comments/vnovel/beginners_guide_to_visual_novels/',
+          snippet: 'Community recommendations to jump into moe-filled storytelling and branching adventures.',
+          tags: ['visual novels', 'community']
+        },
+        {
+          title: 'Anime Convention Packing Checklist',
+          url: 'https://www.animecons.com/events/tips/packing',
+          snippet: 'Stay organized with a printable checklist covering cosplay kits, tech, and artist alley funds.',
+          tags: ['conventions', 'checklist']
+        }
+      ];
+
+      const trendingQueries = [
+        'Konata gaming setup',
+        'Lucky Star dance practice',
+        'Cozy slice of life anime',
+        'Anime convention tips',
+        'Visual novel recommendations',
+        'Konata cosplay wig care'
+      ];
+
+      const searchForm = document.getElementById('search-form');
+      const searchInput = document.getElementById('search-input');
+      const searchMeta = document.getElementById('search-meta');
+      const chipsContainer = document.getElementById('search-chips');
+      const resultsContainer = document.getElementById('results');
+
+      const params = new URLSearchParams(window.location.search);
+      const initialQuery = params.get('q') ? params.get('q').trim() : '';
+      if (initialQuery) {
+        searchInput.value = initialQuery;
+      }
+
+      const updateTitle = (query) => {
+        document.title = query ? `Kona Search – ${query}` : 'Kona Search';
+      };
+
+      const escapeRegExp = (text) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+      const highlightTokens = (text, tokens) => {
+        if (!tokens.length) return text;
+        return tokens.reduce((output, token) => {
+          const pattern = new RegExp(`(${escapeRegExp(token)})`, 'gi');
+          return output.replace(pattern, '<mark>$1</mark>');
+        }, text);
+      };
+
+      const buildSearchIndex = (entry) =>
+        `${entry.title} ${entry.snippet} ${(entry.tags || []).join(' ')}`.toLowerCase();
+
+      const scoredResults = curatedResults.map((entry) => ({
+        entry,
+        index: buildSearchIndex(entry)
+      }));
+
+      const runSearch = (query) => {
+        const normalized = query.trim().toLowerCase();
+        updateTitle(query.trim());
+
+        chipsContainer.innerHTML = '';
+        trendingQueries.forEach((item) => {
+          const chip = document.createElement('button');
+          chip.type = 'button';
+          chip.textContent = item;
+          chip.addEventListener('click', () => {
+            searchInput.value = item;
+            submitQuery(item);
+          });
+          chipsContainer.appendChild(chip);
+        });
+
+        if (!normalized) {
+          searchMeta.textContent = 'Discover curated picks or try one of the trending topics below.';
+          renderResultCards(curatedResults.slice(0, 5), []);
+          return;
+        }
+
+        const terms = normalized.split(/\s+/).filter(Boolean);
+        const matches = scoredResults
+          .map(({ entry, index }) => {
+            const score = terms.reduce((sum, term) => {
+              if (!index.includes(term)) {
+                return sum;
+              }
+              const bonus = entry.title.toLowerCase().includes(term) ? 2 : 1;
+              return sum + bonus;
+            }, 0);
+            return { entry, score };
+          })
+          .filter(({ score }) => score > 0)
+          .sort((a, b) => {
+            if (b.score === a.score) {
+              return a.entry.title.localeCompare(b.entry.title);
+            }
+            return b.score - a.score;
+          })
+          .map(({ entry }) => entry);
+
+        if (!matches.length) {
+          renderEmptyState(terms);
+          return;
+        }
+
+        searchMeta.textContent = `Showing ${matches.length} Kona Search result${matches.length === 1 ? '' : 's'}.`;
+        renderResultCards(matches, terms);
+      };
+
+      const renderResultCards = (entries, terms) => {
+        resultsContainer.innerHTML = '';
+        entries.forEach((entry) => {
+          const card = document.createElement('article');
+          card.className = 'result-card';
+
+          const link = document.createElement('a');
+          link.href = entry.url;
+          link.textContent = entry.title;
+          link.target = '_blank';
+          link.rel = 'noopener';
+
+          const description = document.createElement('p');
+          description.innerHTML = highlightTokens(entry.snippet, terms);
+
+          card.appendChild(link);
+          card.appendChild(description);
+
+          if (entry.tags?.length) {
+            const tagList = document.createElement('div');
+            tagList.className = 'tags';
+            entry.tags.forEach((tag) => {
+              const badge = document.createElement('span');
+              badge.textContent = tag;
+              tagList.appendChild(badge);
+            });
+            card.appendChild(tagList);
+          }
+
+          resultsContainer.appendChild(card);
+        });
+      };
+
+      const renderEmptyState = (terms) => {
+        resultsContainer.innerHTML = '';
+        const wrapper = document.createElement('div');
+        wrapper.className = 'empty-state';
+
+        const heading = document.createElement('h2');
+        heading.textContent = 'No Kona Search results yet';
+
+        const paragraph = document.createElement('p');
+        const joined = terms.join(' ');
+        paragraph.innerHTML = `Try refining "<mark>${joined}</mark>" or pick one of the suggestions below.`;
+
+        const suggestionList = document.createElement('div');
+        suggestionList.className = 'suggestions';
+        trendingQueries.slice(0, 4).forEach((suggestion) => {
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.textContent = suggestion;
+          button.addEventListener('click', () => {
+            searchInput.value = suggestion;
+            submitQuery(suggestion);
+          });
+          suggestionList.appendChild(button);
+        });
+
+        wrapper.appendChild(heading);
+        wrapper.appendChild(paragraph);
+        wrapper.appendChild(suggestionList);
+        resultsContainer.appendChild(wrapper);
+        searchMeta.textContent = 'No results found yet – Kona is still learning!';
+      };
+
+      const submitQuery = (value) => {
+        const query = value.trim();
+        const nextSearch = query ? `?q=${encodeURIComponent(query)}` : '';
+        const target = nextSearch || window.location.pathname;
+
+        if (nextSearch === window.location.search || (!nextSearch && !window.location.search)) {
+          searchInput.value = query;
+          runSearch(query);
+          return;
+        }
+
+        history.pushState({}, '', target);
+        searchInput.value = query;
+        runSearch(query);
+      };
+
+      searchForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        submitQuery(searchInput.value);
+      });
+
+      window.addEventListener('popstate', () => {
+        const current = new URLSearchParams(window.location.search).get('q') || '';
+        searchInput.value = current;
+        runSearch(current);
+      });
+
+      runSearch(initialQuery);
+    </script>
+  </body>
+</html>

@@ -9,13 +9,43 @@ const toggleThemeButton = document.getElementById('toggle-theme');
 const welcomePanel = document.getElementById('welcome');
 const quickLinks = document.querySelectorAll('.quick-links button');
 
-const HOME_URL = 'https://duckduckgo.com/?q=Konata+Izumi';
+const KONA_SEARCH_BASE = new URL('kona-search.html', window.location.href);
+const HOME_URL = KONA_SEARCH_BASE.toString();
 let useAltAccent = false;
+
+const buildKonaSearchUrl = (query) => {
+  const target = new URL(KONA_SEARCH_BASE.href);
+  const trimmed = typeof query === 'string' ? query.trim() : '';
+  if (trimmed) {
+    target.searchParams.set('q', trimmed);
+  }
+  return target.toString();
+};
+
+const isKonaSearchUrl = (url) => {
+  if (!url) return false;
+  return url.startsWith(HOME_URL);
+};
+
+const getKonaSearchQuery = (url) => {
+  if (!isKonaSearchUrl(url)) return null;
+  try {
+    const parsed = new URL(url);
+    return parsed.searchParams.get('q') ?? '';
+  } catch (_error) {
+    return '';
+  }
+};
 
 const formatUrl = (raw) => {
   if (!raw) return null;
   const trimmed = raw.trim();
   if (!trimmed) return null;
+
+  if (/^kona-search:/i.test(trimmed)) {
+    const query = trimmed.replace(/^kona-search:/i, '').trim();
+    return buildKonaSearchUrl(query);
+  }
 
   if (/^https?:\/\//i.test(trimmed)) {
     return trimmed;
@@ -25,8 +55,7 @@ const formatUrl = (raw) => {
     return `https://${trimmed}`;
   }
 
-  const encoded = encodeURIComponent(trimmed);
-  return `https://duckduckgo.com/?q=${encoded}`;
+  return buildKonaSearchUrl(trimmed);
 };
 
 const updateNavigationState = () => {
@@ -35,9 +64,13 @@ const updateNavigationState = () => {
 };
 
 const updateAddress = (url) => {
-  if (url) {
-    urlInput.value = url;
+  if (!url) return;
+  const query = getKonaSearchQuery(url);
+  if (query !== null) {
+    urlInput.value = query || '';
+    return;
   }
+  urlInput.value = url;
 };
 
 const hideWelcome = () => {
@@ -50,7 +83,7 @@ const showWelcome = () => {
 
 const syncWelcome = (url) => {
   if (!url) return;
-  if (url.startsWith(HOME_URL)) {
+  if (isKonaSearchUrl(url)) {
     showWelcome();
   } else {
     hideWelcome();
@@ -124,6 +157,7 @@ reloadButton.addEventListener('click', () => {
 homeButton.addEventListener('click', () => {
   showWelcome();
   webview.loadURL(HOME_URL);
+  urlInput.value = '';
 });
 
 urlInput.addEventListener('keydown', (event) => {
